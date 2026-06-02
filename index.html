@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário Interativo</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+}
+
+.container{
+    background:#fff;
+    width:100%;
+    max-width:500px;
+    padding:30px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#1e293b;
+}
+
+.form-group{
+    margin-bottom:18px;
+}
+
+label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:2px solid #ccc;
+    border-radius:8px;
+    outline:none;
+    transition:0.3s;
+}
+
+input:focus{
+    border-color:#2563eb;
+}
+
+.erro{
+    color:#dc2626;
+    font-size:14px;
+    margin-top:5px;
+    display:none;
+}
+
+.input-erro{
+    border-color:#dc2626 !important;
+    background:#fee2e2;
+}
+
+.input-sucesso{
+    border-color:#16a34a !important;
+    background:#dcfce7;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+#mensagemFinal{
+    margin-top:20px;
+    padding:12px;
+    border-radius:8px;
+    text-align:center;
+    display:none;
+}
+
+.sucesso{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.falha{
+    background:#fee2e2;
+    color:#991b1b;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Formulário Interativo</h1>
+
+    <form id="formulario">
+
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" placeholder="Digite seu nome">
+            <small class="erro" id="erroNome"></small>
+        </div>
+
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="Digite seu e-mail">
+            <small class="erro" id="erroEmail"></small>
+        </div>
+
+        <button type="submit">Enviar</button>
+
+        <div id="mensagemFinal"></div>
+
+    </form>
+</div>
+
+<script>
+const formulario = document.getElementById("formulario");
+const nome = document.getElementById("nome");
+const email = document.getElementById("email");
+
+const erroNome = document.getElementById("erroNome");
+const erroEmail = document.getElementById("erroEmail");
+
+const mensagemFinal = document.getElementById("mensagemFinal");
+
+// Eventos de feedback em tempo real
+nome.addEventListener("input", validarNome);
+email.addEventListener("input", validarEmail);
+
+function validarNome() {
+    const valor = nome.value.trim();
+
+    if (valor.length < 3) {
+        erroNome.style.display = "block";
+        erroNome.textContent =
+            "O nome deve ter pelo menos 3 caracteres.";
+
+        nome.classList.add("input-erro");
+        nome.classList.remove("input-sucesso");
+        return false;
+    }
+
+    erroNome.style.display = "none";
+    nome.classList.remove("input-erro");
+    nome.classList.add("input-sucesso");
+    return true;
+}
+
+function validarEmail() {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!regex.test(email.value)) {
+        erroEmail.style.display = "block";
+        erroEmail.textContent =
+            "Digite um e-mail válido.";
+
+        email.classList.add("input-erro");
+        email.classList.remove("input-sucesso");
+        return false;
+    }
+
+    erroEmail.style.display = "none";
+    email.classList.remove("input-erro");
+    email.classList.add("input-sucesso");
+    return true;
+}
+
+formulario.addEventListener("submit", function(event){
+    event.preventDefault();
+
+    const nomeValido = validarNome();
+    const emailValido = validarEmail();
+
+    if(nomeValido && emailValido){
+        mensagemFinal.style.display = "block";
+        mensagemFinal.className = "sucesso";
+        mensagemFinal.textContent =
+            "✅ Formulário enviado com sucesso!";
+
+        formulario.reset();
+
+        nome.classList.remove("input-sucesso");
+        email.classList.remove("input-sucesso");
+
+    }else{
+        mensagemFinal.style.display = "block";
+        mensagemFinal.className = "falha";
+        mensagemFinal.textContent =
+            "❌ Corrija os erros antes de enviar.";
+    }
+});
+</script>
+
+</body>
+</html>
